@@ -43,8 +43,6 @@ while True:
 
             bottom_left_point = (x2, y1)
             top_right_point = (x1, y2)
-
-            cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 255), 2)
             
             # Positive difference between x's and y's
             dx = x1 - x2
@@ -62,20 +60,17 @@ while True:
                 # print(result)
 
                 face_distance = face_recognition.face_distance([kichang_encode], encode_sample)
-                print(face_distance)
+                #print(face_distance)
 
-                
+                if face_distance < 0.5:
+                    print(face_distance, 'face matched')
+                    cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 0), 2)
+
+                else:
+                    print(face_distance, 'face not found')
+                    cv2.rectangle(frame, bottom_left_point, top_right_point, (0, 0, 255), 2)
 
 
-            #encode_sample = face_recognition.face_encodings(sample)[0]
-            #result = face_recognition.compare_faces([kichang_encode], encode_sample)
-            #face_dis = face_recognition.face_distance([kichang_encode], encode_sample)
-            #print(result, face_dis)
-
-            # if face_dis < 0.4:
-            #     print('Face matched')
-            # else:
-            #     print('Face not found')
 
 
         cv2.imshow(window_name, frame)
