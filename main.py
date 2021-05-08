@@ -19,6 +19,9 @@ window_name = 'Facial Recognition Project'
 
 
 def anonymize_face_simple(image, factor=3.0):
+    '''
+    Given an image, return the gaussian blurred image
+    '''
     (h,w) = image.shape[:2]
     kW = int(w / factor)
     kH = int(h / factor)
