@@ -51,6 +51,8 @@ while True:
     # Read from main camera
     ret, frame = video.read()
 
+    frame = cv2.GaussianBlur(frame, (3, 3), 0)
+
     if ret: 
         # Find all face locations in the frame
         face_locations = face_recognition.face_locations(frame)
@@ -86,17 +88,20 @@ while True:
 
                 if face_distance < FACE_DISTANCE_CONSTANT:
                     print(face_distance, 'face matched')
+                    # Put a blue rectangle if face that needs to be filtered is found
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 0), 2)
                     blur_img = anonymize_face_simple(sample)
                     cv2.imshow('Blurred',blur_img)
+                    # Apply the filter on the face
                     frame[y1:y1+dy, x2:x2+dx] = blur_img
                 else:
                     print(face_distance, 'face not found')
+                    # Put a red rectangle if face that needs to be filtered is not found
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (0, 0, 255), 2)
 
         cv2.imshow(window_name, frame)
 
-
+    # Exit program on 'Q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
