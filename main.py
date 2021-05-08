@@ -53,15 +53,15 @@ while True:
             # Extract the face from the raw image
             sample = frame[y1:y1+dy, x2:x2+dx]
 
-            encode_sample = face_recognition.face_encodings(sample)
+            encode_samples = face_recognition.face_encodings(sample)
 
             # Proceed if a face snippet was extracted
-            if len(encode_sample) > 0:
-                sample = encode_sample[0]
+            if len(encode_samples) > 0:
+                encode_sample = encode_samples[0]
                 # result = face_recognition.compare_faces([kichang_encode], sample)
                 # print(result)
 
-                face_distance = face_recognition.face_distance([kichang_encode], sample)
+                face_distance = face_recognition.face_distance([kichang_encode], encode_sample)
                 print(face_distance)
 
                 
