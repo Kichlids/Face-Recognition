@@ -7,9 +7,6 @@ video = cv2.VideoCapture(0)
 window_name = 'Face'
 
 
-def filter_face(img):
-    pass
-
 
 def anonymize_face_simple(image, factor=3.0):
     (h,w) = image.shape[:2]
@@ -28,23 +25,34 @@ def anonymize_face_simple(image, factor=3.0):
 kichang_img = face_recognition.load_image_file('Face_Images/Kichang.jpg')
 kichang_img = cv2.cvtColor(kichang_img, cv2.COLOR_BGR2RGB)
 kichang_img = cv2.rotate(kichang_img, cv2.ROTATE_90_CLOCKWISE)
-#cv2.imshow('', kichang_img)
 
 # Encode Kichang face to be compared
 kichang_encode = face_recognition.face_encodings(kichang_img)[0]
-#print(kichang_encode)
 
 # Read in Jazmin face
 jazmin_img = face_recognition.load_image_file('Face_Images/Jazmin.jpg')
 jazmin_img = cv2.cvtColor(jazmin_img, cv2.COLOR_BGR2RGB)
-#cv2.imshow('', jazmin_img)
+
+# Encode Jazmin face to be compared
+jazmin_encode = face_recognition.face_encodings(jazmin_img)[0]
+
+
+encode_filtered = kichang_encode
+
+
+
+
+# Threshold for determining faces
+# Must be between 0 and 1, where closer to 0 indicates higher probability that the faces matches
+FACE_DISTANCE_CONSTANT = 0.5
 
 while True:
+
+    # Read from main camera
     ret, frame = video.read()
 
     if ret: 
-
-        # Get all coordinates with face
+        # Find all face locations in the frame
         face_locations = face_recognition.face_locations(frame)
 
         for face in face_locations:
@@ -64,18 +72,19 @@ while True:
             # Extract the face from the raw image
             sample = frame[y1:y1+dy, x2:x2+dx]
 
+            # Encode the face snippet to be compared
             encode_samples = face_recognition.face_encodings(sample)
 
             # Proceed if a face snippet was extracted
             if len(encode_samples) > 0:
+                # Get the first (and only) element
                 encode_sample = encode_samples[0]
-                # result = face_recognition.compare_faces([kichang_encode], sample)
-                # print(result)
+                
+                # Calculate a value between 0 and 1 for comparing two faces
+                # Closer to 0 indicates higher probability that the two faces match
+                face_distance = face_recognition.face_distance([encode_filtered], encode_sample)
 
-                face_distance = face_recognition.face_distance([kichang_encode], encode_sample)
-                #print(face_distance)
-
-                if face_distance < 0.5:
+                if face_distance < FACE_DISTANCE_CONSTANT:
                     print(face_distance, 'face matched')
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 0), 2)
                     blur_img = anonymize_face_simple(sample)
@@ -84,9 +93,6 @@ while True:
                 else:
                     print(face_distance, 'face not found')
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (0, 0, 255), 2)
-
-
-
 
         cv2.imshow(window_name, frame)
 
