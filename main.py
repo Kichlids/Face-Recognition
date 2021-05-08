@@ -30,14 +30,14 @@ kichang_img = cv2.rotate(kichang_img, cv2.ROTATE_90_CLOCKWISE)
 kichang_encode = face_recognition.face_encodings(kichang_img)[0]
 
 # Read in Jazmin face
-jazmin_img = face_recognition.load_image_file('Face_Images/Jazmin.jpg')
+jazmin_img = face_recognition.load_image_file('Face_Images/Jazmin1.jpg')
 jazmin_img = cv2.cvtColor(jazmin_img, cv2.COLOR_BGR2RGB)
 
 # Encode Jazmin face to be compared
 jazmin_encode = face_recognition.face_encodings(jazmin_img)[0]
 
 
-encode_filtered = kichang_encode
+encode_filtered = jazmin_encode
 
 
 
