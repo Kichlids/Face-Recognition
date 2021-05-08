@@ -1,10 +1,20 @@
+'''
+ECE 4973 Computer Vision
+Spring 2021
+University of Oklahoma
+Dr. Samuel Cheng
+
+Authors:
+    Jazmin Gomez
+    Kichang Song
+'''
+
 import cv2
-import numpy as np
 import face_recognition
 
 video = cv2.VideoCapture(0)
 
-window_name = 'Face'
+window_name = 'Facial Recognition Project'
 
 
 
@@ -37,6 +47,7 @@ jazmin_img = cv2.cvtColor(jazmin_img, cv2.COLOR_BGR2RGB)
 jazmin_encode = face_recognition.face_encodings(jazmin_img)[0]
 
 
+# Determine which face will be filtered
 encode_filtered = jazmin_encode
 
 
@@ -92,7 +103,7 @@ while True:
                     # Put a blue rectangle if face that needs to be filtered is found
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 0), 2)
                     blur_img = anonymize_face_simple(sample)
-                    cv2.imshow('Blurred',blur_img)
+                    cv2.imshow('Blurred', blur_img)
 
                     # Apply the filter on the face
                     frame[y1:y1+dy, x2:x2+dx] = blur_img
@@ -101,7 +112,8 @@ while True:
                     
                     # Put a red rectangle if face that needs to be filtered is not found
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (0, 0, 255), 2)
-
+        
+        # Show the final output
         cv2.imshow(window_name, frame)
 
     # Exit program on 'Q'
