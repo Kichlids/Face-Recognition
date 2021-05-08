@@ -11,6 +11,19 @@ def filter_face(img):
     pass
 
 
+def anonymize_face_simple(image, factor=3.0):
+    (h,w) = image.shape[:2]
+    kW = int(w / factor)
+    kH = int(h / factor)
+
+    if kW % 2 == 0:
+        kW -= 1
+
+    if kH % 2 == 0:
+        kH -= 1
+
+    return cv2.GaussianBlur(image, (kW, kH), 0)
+
 # Read in Kichang face
 kichang_img = face_recognition.load_image_file('Face_Images/Kichang.jpg')
 kichang_img = cv2.cvtColor(kichang_img, cv2.COLOR_BGR2RGB)
@@ -65,7 +78,9 @@ while True:
                 if face_distance < 0.5:
                     print(face_distance, 'face matched')
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (255, 0, 0), 2)
-
+                    blur_img = anonymize_face_simple(sample)
+                    cv2.imshow('Blurred',blur_img)
+                    frame[y1:y1+dy, x2:x2+dx] = blur_img
                 else:
                     print(face_distance, 'face not found')
                     cv2.rectangle(frame, bottom_left_point, top_right_point, (0, 0, 255), 2)
